@@ -2,6 +2,9 @@ pipeline {
     agent {
         label 'ubuntu'
     }
+    tools {
+        maven 'maven-apache-3.8.4' 
+    }
     stages {
         stage('Build') {
             steps {
