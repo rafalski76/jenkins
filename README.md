@@ -1,18 +1,40 @@
-# simple-java-maven-app
+# jenkins – przykładowa aplikacja Java z pipeline'em Jenkins
 
-This repository is for the
-[Build a Java app with Maven](https://jenkins.io/doc/tutorials/build-a-java-app-with-maven/)
-tutorial in the [Jenkins User Documentation](https://jenkins.io/doc/).
+[![CI](https://github.com/rafalski76/jenkins/actions/workflows/ci.yml/badge.svg)](https://github.com/rafalski76/jenkins/actions/workflows/ci.yml)
 
-The repository contains a simple Java application which outputs the string
-"Hello world!" and is accompanied by a couple of unit tests to check that the
-main application works as expected. The results of these tests are saved to a
-JUnit XML report.
+Prosta aplikacja Java (Maven) wypisująca `Hello World!`, wraz z testami jednostkowymi
+(JUnit 5) i deklaratywnym pipeline'em Jenkins. Projekt powstał na bazie tutoriala
+[Build a Java app with Maven](https://www.jenkins.io/doc/tutorials/build-a-java-app-with-maven/)
+z dokumentacji Jenkinsa.
 
-The `jenkins` directory contains an example of the `Jenkinsfile` (i.e. Pipeline)
-you'll be creating yourself during the tutorial and the `scripts` subdirectory
-contains a shell script with commands that are executed when Jenkins processes
-the "Deliver" stage of your Pipeline.
+## Wymagania
 
+- JDK 21 (LTS) lub nowszy
+- Maven 3.9+
 
-  
+## Struktura
+
+| Ścieżka | Opis |
+| --- | --- |
+| `src/main/java` | Kod aplikacji (`com.mycompany.app.App`) |
+| `src/test/java` | Testy jednostkowe (JUnit Jupiter) |
+| `pom.xml` | Konfiguracja Mavena (kompilacja, JAR, maven-enforcer) |
+| `jenkins/Jenkinsfile` | Pipeline: `Build` → `Test` → `Deliver` |
+| `jenkins/scripts/deliver.sh` | Skrypt etapu `Deliver` (instalacja i uruchomienie JAR-a) |
+
+## Uruchomienie lokalne
+
+```shell
+mvn -B verify                              # kompilacja + testy
+java -jar target/my-app-1.0-SNAPSHOT.jar   # Hello World!
+```
+
+## Jenkins
+
+`Jenkinsfile` wymaga agenta z etykietą `ubuntu` oraz skonfigurowanego narzędzia Maven o nazwie
+`maven-apache-3.8.4` (*Manage Jenkins → Tools*). Jeśli używasz nowszego Mavena, zmień nazwę
+w sekcji `tools` – projekt wymaga Mavena 3.9+ (sprawdza to `maven-enforcer-plugin`).
+
+## CI
+
+Workflow [`ci.yml`](.github/workflows/ci.yml) uruchamia `mvn verify` (JDK 21) oraz `shellcheck` skryptów.
